@@ -1,10 +1,11 @@
-.PHONY: all bootstrap lint build test coverage install vars debug clean clean-install clobber
+.PHONY: all bootstrap lint build test coverage install docker vars debug clean clean-install clobber
 
 .DEFAULT_GOAL := build
 
 ################################################################################
 # Macros
 ################################################################################
+REPO_NAME=$(shell grep name build.yaml | cut -d' ' -f2)
 VERBOSE := -v
 
 # Bootstrap
@@ -14,7 +15,9 @@ GOLINTER_YML = .golangci.yml
 
 # Go Code
 VENDOR = vendor
-PACKAGES = $(shell find . -name main.go -not -path "./$(VENDOR)/*" -exec dirname {} \; | xargs realpath | xargs basename)
+PACKAGES = $(shell find . -name main.go -not -path "./$(VENDOR)/*" -exec dirname {} \; \
+					 | xargs realpath 2>/dev/null \
+					 | xargs basename 2>/dev/null)
 SRC_FILES = $(shell find . -name "*.go" -not -path "./$(VENDOR)/*" | grep -v _test.go)
 TEST_FILES = $(shell find . -name "*_test.go" -not -path "./$(VENDOR)/*")
 
@@ -55,6 +58,19 @@ GOINSTALL_FLAGS ?= -i
 
 # Versions
 GOLINTER_VER := v1.31.0
+
+# Docker wrapper
+DOCKER_IMAGE = registry.twilio.com/library/golang:1.15.3-1
+DOCKER_WORK_DIR=/go/src/code.hq.twilio.com/twilio/$(REPO_NAME)
+DOCKER_GOCACHE=$(DOCKER_WORK_DIR)/go-build
+DOCKER_XDG_CACHE_HOME=$(DOCKER_WORK_DIR)/.cache
+DOCKER_RUN_FLAGS= --rm \
+ --user=$(shell id -u):$(shell id -g) \
+ -e CGO_ENABLED=0 \
+ -e GOCACHE=$(DOCKER_GOCACHE) \
+ -e XDG_CACHE_HOME=$(DOCKER_XDG_CACHE_HOME) \
+ -v $(PWD):$(DOCKER_WORK_DIR) \
+ -w $(DOCKER_WORK_DIR) \
 
 ################################################################################
 # Files
@@ -102,6 +118,10 @@ coverage:: $(COVERAGE_HTML)
 build:: $(BUILDS)
 
 install:: $(INSTALLS)
+
+docker::
+	docker pull -q $(DOCKER_IMAGE)
+	docker run $(DOCKER_RUN_FLAGS) $(DOCKER_IMAGE) bash -c "make $(TARGETS)"
 
 clean::
 	rm -f $(ARTIFACTS)
