@@ -60,14 +60,14 @@ GOINSTALL_FLAGS ?= -i
 GOLINTER_VER := v1.31.0
 
 # Caches
-GOCACHE=.go-build
+BUILD_CACHE=.go-build
 XDG_CACHE_HOME=.cache
 
 # Docker wrapper
 DOCKER_IMAGE = registry.twilio.com/library/golang:1.15.3-1
 DOCKER_WORK_DIR=/src/$(REPO_NAME)
-DOCKER_GOCACHE=$(DOCKER_WORK_DIR)/$(GOCACHE)
-DOCKER_XDG_CACHE_HOME=$(DOCKER_WORK_DIR)/$(GOCACHE)
+DOCKER_GOCACHE=$(DOCKER_WORK_DIR)/$(BUILD_CACHE)
+DOCKER_XDG_CACHE_HOME=$(DOCKER_WORK_DIR)/$(XDG_CACHE_HOME)
 DOCKER_RUN_FLAGS= --rm \
  --user=$(shell id -u):$(shell id -g) \
  -e CGO_ENABLED=0 \
@@ -80,7 +80,7 @@ DOCKER_RUN_FLAGS= --rm \
 # Files
 ################################################################################
 # .gitignore
-IGNORES = $(BIN_DIR) $(REPORT_DIR) $(GO_MK) $(CONFIG) $(VENDOR) $(GOCACHE) $(XDG_CACHE_HOME)
+IGNORES = $(BIN_DIR) $(REPORT_DIR) $(GO_MK) $(CONFIG) $(VENDOR) $(GUILD_CACHE) $(XDG_CACHE_HOME)
 
 # .golangci.yml
 define GOLINTER_CONFIG
