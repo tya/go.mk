@@ -59,11 +59,15 @@ GOINSTALL_FLAGS ?= -i
 # Versions
 GOLINTER_VER := v1.31.0
 
+# Caches
+GOCACHE=.go-build
+XDG_CACHE_HOME=.cache
+
 # Docker wrapper
 DOCKER_IMAGE = registry.twilio.com/library/golang:1.15.3-1
 DOCKER_WORK_DIR=/src/$(REPO_NAME)
-DOCKER_GOCACHE=$(DOCKER_WORK_DIR)/.go-build
-DOCKER_XDG_CACHE_HOME=$(DOCKER_WORK_DIR)/.cache
+DOCKER_GOCACHE=$(DOCKER_WORK_DIR)/$(GOCACHE)
+DOCKER_XDG_CACHE_HOME=$(DOCKER_WORK_DIR)/$(GOCACHE)
 DOCKER_RUN_FLAGS= --rm \
  --user=$(shell id -u):$(shell id -g) \
  -e CGO_ENABLED=0 \
@@ -76,7 +80,7 @@ DOCKER_RUN_FLAGS= --rm \
 # Files
 ################################################################################
 # .gitignore
-IGNORES = $(BIN_DIR) $(REPORT_DIR) $(GO_MK) $(CONFIG) $(VENDOR)
+IGNORES = $(BIN_DIR) $(REPORT_DIR) $(GO_MK) $(CONFIG) $(VENDOR) $(GOCACHE) $(XDG_CACHE_HOME)
 
 # .golangci.yml
 define GOLINTER_CONFIG
@@ -185,16 +189,16 @@ $(GOLINTER):
 	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOBIN) $(GOLINTER_VER)
 
 $(GOCOV):
-	@go get -u github.com/axw/gocov/gocov
+	GO111MODULE="off" go get -u github.com/axw/gocov/gocov
 
 $(GOJUNIT_REPORT):
-	@go get -u github.com/jstemmer/go-junit-report
+	GO111MODULE="off" go get -u github.com/jstemmer/go-junit-report
 
 $(GOCOV_XML):
-	@go get -u github.com/AlekSi/gocov-xml
+	GO111MODULE="off" go get -u github.com/AlekSi/gocov-xml
 
 $(GOCOV_HTML):
-	@go get -u github.com/matm/gocov-html
+	GO111MODULE="off" go get -u github.com/matm/gocov-html
 
 ################################################################################
 # Helpers
