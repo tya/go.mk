@@ -80,7 +80,7 @@ DOCKER_RUN_FLAGS= --rm \
 # Files
 ################################################################################
 # .gitignore
-IGNORES = $(BIN_DIR) $(REPORT_DIR) $(GO_MK) $(CONFIG) $(VENDOR) $(GUILD_CACHE) $(XDG_CACHE_HOME)
+IGNORES = $(BIN_DIR) $(REPORT_DIR) $(GO_MK) $(CONFIG) $(VENDOR) $(BUILD_CACHE) $(XDG_CACHE_HOME)
 
 # .golangci.yml
 define GOLINTER_CONFIG
