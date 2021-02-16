@@ -34,7 +34,8 @@ COVERAGE_HTML = $(REPORT_DIR)/coverage.html
 ARTIFACTS = $(BUILDS) $(LINT_OUT) $(TEST_OUT) $(COVERAGE_JSON) $(JUNIT_XML) $(COVERAGE_XML) $(COVERAGE_HTML)
 
 # Install Artifacts
-GOBIN ?= $(shell go env GOPATH)/bin
+GOPATH ?= /go
+GOBIN ?= $(GOPATH)/bin
 INSTALLS = $(addprefix $(GOBIN)/, $(PACKAGES))
 
 # Go Commands
@@ -80,7 +81,7 @@ DOCKER_RUN_FLAGS= --rm \
 # Files
 ################################################################################
 # .gitignore
-IGNORES = $(BIN_DIR) $(REPORT_DIR) $(GO_MK) $(CONFIG) $(VENDOR) $(BUILD_CACHE) $(XDG_CACHE_HOME)
+IGNORES = $(BIN_DIR) $(REPORT_DIR) $(GO_MK) $(CONFIG) $(BUILD_CACHE) $(XDG_CACHE_HOME)
 
 # .golangci.yml
 define GOLINTER_CONFIG
@@ -229,11 +230,12 @@ debug:: vars
 	@echo "################################################################################"
 	@echo "BIN_DIR = "$(BIN_DIR)
 	@echo "REPORT_DIR = "$(REPORT_DIR)
-	@echo "GOBIN = "$(GOBIN)
 	@echo
 	@echo "################################################################################"
 	@echo "## Tools ##"
 	@echo "################################################################################"
+	@echo "GOPATH = "$(GOPATH)
+	@echo "GOBIN = "$(GOBIN)
 	@echo "GOBUILD = "$(GOBUILD)
 	@echo "GOTEST = "$(GOTEST)
 	@echo "GOINSTALL = "$(GOINSTALL)
