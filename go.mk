@@ -39,9 +39,9 @@ GOBIN ?= $(GOPATH)/bin
 INSTALLS = $(addprefix $(GOBIN)/, $(PACKAGES))
 
 # Go Commands
-GOTEST ?= GOPRIVATE=code.hq.twilio.com/twilio gocov test
-GOBUILD ?= GOPRIVATE=code.hq.twilio.com/twilio go build
-GOINSTALL ?= GOPRIVATE=code.hq.twilio.com/twilio go install
+GOTEST ?= gocov test
+GOBUILD ?= go build
+GOINSTALL ?= go install
 
 # Go Tools
 GOLINTER := $(GOBIN)/golangci-lint
@@ -65,7 +65,7 @@ BUILD_CACHE=.go-build
 XDG_CACHE_HOME=.cache
 
 # Docker wrapper
-DOCKER_IMAGE = registry.twilio.com/library/golang:1.15.3-1
+DOCKER_IMAGE = 1.16.0-buster
 DOCKER_WORK_DIR=/src/$(REPO_NAME)
 DOCKER_GOCACHE=$(DOCKER_WORK_DIR)/$(BUILD_CACHE)
 DOCKER_XDG_CACHE_HOME=$(DOCKER_WORK_DIR)/$(XDG_CACHE_HOME)
